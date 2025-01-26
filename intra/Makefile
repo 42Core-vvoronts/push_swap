@@ -1,34 +1,22 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: vvoronts <vvoronts@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/12/08 10:37:31 by vvoronts          #+#    #+#              #
-#    Updated: 2024/12/09 13:43:04 by vvoronts         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
-# Variables
+# Compilation and flags
 CC					=	cc
-CFLAGS				=	-Wall -Wextra -Werror -g -MMD -MF
 RM					=	rm -rf
+CFLAGS				=	-Wall -Wextra -Werror -g -MMD -MF
+MFLAGS				=	-C
+# Program name
 NAME				=	push_swap
 BONUS_NAME			=	checker
 
-
+# Directories and paths
 INCLUDE_DIRS		=	./include \
-						./lib/libft \
-						./lib/elibft/include \
-						./lib/ft_printf \
+						./lib/include
 
-VPATH				=	./src/push_swap:\
-						./src/stack:\
-						./src/utils:\
-						./src/sort/brutforce:\
-						./src/sort/quicksort:\
-						./src/checker_bonus:\
+VPATH				=	./src/push_swap: \
+						./src/stack: \
+						./src/utils: \
+						./src/sort/brutforce: \
+						./src/sort/quicksort: \
+						./src/checker_bonus: \
 
 INCLUDE				=	$(addprefix -I, $(INCLUDE_DIRS))
 
@@ -54,45 +42,41 @@ MANDATORY_SRC 		=	$(SHARED_SRC) \
 						sort_last_three.c \
 						split_chunks.c \
 						get_values.c \
-
+						
 BONUS_SRC 			=	$(SHARED_SRC) \
 						main_bonus.c \
 						ops_bonus.c \
 						process_bonus.c \
 
-LIBS 				=	./lib/libft/libft.a \
-						./lib/ft_printf/ft_printf.a \
-						./lib/elibft/elibft.a \
+LIBS 				=	./lib/libft.a \
 
 MANDATORY_OBJ		=	$(MANDATORY_SRC:%.c=obj/$(NAME)/%.o)
 BONUS_OBJ			= 	$(BONUS_SRC:%.c=obj/$(BONUS_NAME)/%.o)
 
 DEP					=	$(MANDATORY_SRC:%.c=dep/%.d) $(BONUS_SRC:%.c=dep/%.d)
 
-MFLAGS				= --no-print-directory -C
-
-a: all bonus
-
-all: $(NAME)
-	@echo "Building $(NAME) ..."
+# Make mandatory and bonus 
+all: $(NAME) libs bonus
+	@echo "$(GREEN)Making $(NAME)...$(RESET)"
 
 bonus: $(BONUS_NAME)
-	@echo "Building $(BONUS_NAME) ..."
+	@echo "$(GREEN)Making $(BONUS_NAME)...$(RESET)"
 
-$(NAME): $(MANDATORY_OBJ) libs
+$(NAME): $(MANDATORY_OBJ)
 	@$(CC) $(MANDATORY_OBJ) $(LIBS) -o $@
 
-$(BONUS_NAME): $(BONUS_OBJ) libs
+$(BONUS_NAME): $(BONUS_OBJ)
 	@$(CC) $(BONUS_OBJ) $(LIBS) -o $@
 
 libs:
-	@make $(MFLAGS) ./lib/libft
-	@make $(MFLAGS) ./lib/ft_printf
-	@make $(MFLAGS) ./lib/elibft
+	@echo "$(GREEN)Making library...$(RESET)"
+	@make $(MFLAGS) ./lib
 
+# Object file for mandatory part
 obj/$(NAME)/%.o: %.c | mandatory_dep mandatory_obj_dir
 	@$(CC) $(CFLAGS) dep/$(@:obj/%.o=%.d) $(INCLUDE) -c $< -o $@
 
+# Object file for bonus part
 obj/$(BONUS_NAME)/%.o: %.c | bonus_dep bonus_obj_dir
 	@$(CC) $(CFLAGS) dep/$(@:obj/%.o=%.d) $(INCLUDE) -c $< -o $@
 
@@ -112,25 +96,36 @@ bonus_dep:
 	@mkdir -p dep
 	@mkdir -p dep/$(BONUS_NAME)
 
+# Clean mandatiry part
 clean:
-	@echo "Cleaning ..."
-	@$(RM) obj
-	@$(RM) dep
-	@make clean $(MFLAGS) ./lib/libft
-	@make clean $(MFLAGS) ./lib/ft_printf
-	@make clean $(MFLAGS) ./lib/elibft
+	@echo "$(YELLOW)Removing push_swap objects and deps...$(RESET)"
+	@$(RM) obj/$(NAME)
+	@$(RM) dep/$(NAME)
+	@echo "$(YELLOW)Removing bonus objects and deps...$(RESET)"
+	@$(RM) obj/$(BONUS_NAME)
+	@$(RM) dep/$(BONUS_NAME)
 
-fclean: clean
+# Clean libs
+cleanlib:
+	@echo "$(YELLOW)Cleaning library...$(RESET)"
+	@make clean $(MFLAGS) ./lib
+
+fclean: clean cleanlib
 	@$(RM) $(NAME)
+	@echo "$(RED)$(NAME) has been removed.$(RESET)"
 	@$(RM) $(BONUS_NAME)
-	@make fclean $(MFLAGS) ./lib/libft
-	@make fclean $(MFLAGS) ./lib/ft_printf
-	@make fclean $(MFLAGS) ./lib/elibft
+	@echo "$(RED)$(BONUS_NAME) has been removed.$(RESET)"
 
-re: fclean a
+re: fclean all
 
-.PHONY: all clean fclean re bonus libs a
-.DEFAULT_GOAL := a
+.PHONY: all clean fclean re bonus
+.DEFAULT_GOAL := all
 
 # Include the dependency files
--include $(DEPS)
+-include $(DEP)
+
+# set colors
+RED					= 	\033[0;31m
+GREEN				= 	\033[0;32m
+YELLOW				= 	\033[0;33m
+RESET				= 	\033[0m
