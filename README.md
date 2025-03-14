@@ -14,11 +14,11 @@ This project implements a highly optimized sorting algorithm for `push_swap`, in
 
 ## Operations
 Visualization of operations and ring buffer usage:
-![Operations](wiki/ops.png)
+![Operations](wiki/ops.jpg)
 
 ## Performance
 Comparison of move counts in different cases. Thanks to [SimonCROS](https://github.com/SimonCROS/push_swap_tester) for the tester:
-![Performance](wiki/performance.png)
+![Performance](wiki/performance.jpg)
 
 ## Installation  
 
