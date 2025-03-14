@@ -12,14 +12,6 @@ This project implements a highly optimized sorting algorithm for `push_swap`, in
 - **Ring Buffer** for optimized command storage.  
 - **High Performance**, achieving competitive move counts.  
 
-## Operations
-Visualization of operations and ring buffer usage:
-![Operations](wiki/ops.jpg)
-
-## Performance
-Comparison of move counts in different cases. Thanks to [SimonCROS](https://github.com/SimonCROS/push_swap_tester) for the tester:
-![Performance](wiki/performance.jpg)
-
 ## Installation  
 
 1. Clone the repository:  
@@ -37,4 +29,11 @@ Comparison of move counts in different cases. Thanks to [SimonCROS](https://gith
 Run the program with a list of numbers:  
 ```sh
 ./push_swap 4 67 3 87 23  
-``` 
+```
+## Operations
+Visualization of operations and ring buffer usage:
+![Operations](wiki/ops.jpg)
+
+## Performance
+Comparison of move counts in different cases. Thanks to [SimonCROS](https://github.com/SimonCROS/push_swap_tester) for the tester:
+![Performance](wiki/performance.jpg)
